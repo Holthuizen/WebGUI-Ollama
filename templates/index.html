@@ -20,14 +20,13 @@
         {% endfor %}
     </select>
 
-
-
-
     <textarea id="user_input" placeholder="Type your message..." onkeydown="handleKeyPress(event)"></textarea>
     <button id="send_button" onclick="sendMessage()">Send</button>
     <p id="status"></p> <!-- Message status -->
     <div id="chat_output"></div>
   </div>
+  <div id="stats"></div>
+
 
   <script>
     function handleKeyPress(event) {
@@ -47,6 +46,9 @@
       let sendButton = document.getElementById("send_button");
       let statusMessage = document.getElementById("status");
       let chatOutput = document.getElementById("chat_output");
+      let stats = document.getElementById("stats");
+    
+      
 
       sendButton.disabled = true;
       statusMessage.innerHTML = `<span class="loading">Thinking...</span>`;  
@@ -61,7 +63,9 @@
       .then(data => {
         chatOutput.innerHTML += `<p class="message"><b>You:</b> ${userMessage}</p>`;
         let markdownResponse = data.reply; 
-        chatOutput.innerHTML += `<p class="message"><b>${selectedModel}:</b> ${markdownResponse}</p>`;
+        let tokens_per_sec = data.tokens_a_sec
+        chatOutput.innerHTML += `<p class="message"><b>${selectedModel}:</b> ${markdownResponse}</p>`; 
+        stats.innerHTML += `<i>tokens per second: ${tokens_per_sec}</i>`
         document.getElementById("user_input").value = "";
       })
       .catch(error => {

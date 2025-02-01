@@ -37,7 +37,14 @@ def chat():
     except Exception as e:
         bot_reply = f"Error: {str(e)}"
 
-    return jsonify({"reply": html_response})
+    #calculate number of takes per sec
+    eval_count = int(response_json.get("eval_count",0))
+    eval_duration = int(response_json.get("eval_duration",0)) #in nanoseconds
+    if eval_count > 0 and eval_duration > 0: 
+        tokens_a_sec = round((eval_count/eval_duration) * 10e8, 1)
+    else: 
+        tokens_a_sec = 0
+    return jsonify({"reply": html_response, "tokens_a_sec":tokens_a_sec})
 
 @app.route('/list', methods=['GET'])
 def list_models():
